@@ -1,0 +1,42 @@
+@font-face{
+  font-family:'Lato';
+  src:url("../fonts/Lato.ttf");
+}
+@font-face{
+  font-family:'Montserrat';
+  src:url("../fonts/Montserrat.ttf");
+}
+@font-face{
+  font-family:'AbrilFatface';
+  src:url("../fonts/AbrilFatface.ttf");
+}
+@font-face{
+  font-family:'Montserrat';
+  src:url("../fonts/Montserrat.ttf");
+}
+@font-face{
+  font-family:'Montserrat';
+  src:url("../fonts/Montserrat.ttf");
+}
+.sliderExample {
+	width: 200px;
+	padding: 1em;
+	background-color: #f5f5f5;
+	border: 1px solid #f0f0f0;
+	margin: 1em;
+}
+.sliderExample > div {
+	margin: 1em 0;
+}
+#slider_div input{
+	width:50px;
+	text-align:center;
+}
+#inside_text{
+	margin-top:10px;
+	width:200px !important;
+}
+#slider_div .each_div{
+	float:left;
+}
+	    

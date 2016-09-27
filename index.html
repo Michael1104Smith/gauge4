@@ -1,0 +1,314 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html  ng-app="sliderDemoApp">
+  	<head>
+    	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+    	<title>Gauge4</title>
+		
+		<link rel="stylesheet" href="css/jquery-ui.css">
+	    <link rel="stylesheet" href="css/slider.css">
+	    <link rel="stylesheet" href="css/style.css">
+		
+		<!--define svg gradients to be used in java script. make sure the svg tag takes no room on your page=> width and height = 0px-->
+		<svg style="height: 0px; width: 0px;" xmlns="http://www.w3.org/2000/svg">
+		    <defs>    
+			    <linearGradient id="LOW_COLOR" x1="0%" y1="0%" x2="0%" y2="100%" spreadMethod="pad">
+			      <stop offset="0%"   stop-color="#e1edbc" stop-opacity="1"/>
+			      <stop offset="100%" stop-color="#719503" stop-opacity="1"/>
+			    </linearGradient>   
+			    <linearGradient id="MODERATE_COLOR" x1="0%" y1="0%" x2="0%" y2="100%" spreadMethod="pad">
+			      <stop offset="0%"   stop-color="#fdedc0" stop-opacity="1"/>
+			      <stop offset="100%" stop-color="#c5980e" stop-opacity="1"/>
+			    </linearGradient>   
+			    <linearGradient id="HIGH_COLOR" x1="0%" y1="0%" x2="0%" y2="100%" spreadMethod="pad">
+			      <stop offset="0%"   stop-color="#ffd6d1" stop-opacity="1"/>
+			      <stop offset="100%" stop-color="#cd5241" stop-opacity="1"/>
+			    </linearGradient>
+		    </defs>
+		</svg>
+		<script type="text/javascript">
+		  var fontSize = 18;
+	      var minorTicks_count = 20, majorTicks_flag = true;
+	      var cur_value = 27.5, min_val = 0, max_val = 100, min_green = 0, max_green = 35;
+	      var min_yellow = 35, max_yellow = 70;
+	      var min_red = 70, max_red = 100;
+		</script>
+	    <script src="js/jquery-1.10.2.js"></script>
+	    <script src="js/angular.min.js"></script>
+	    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+	    <script type="text/javascript" src="js/slider.js"></script>  
+		<script type="text/javascript" src="js/d3.v2.js"></script>
+		<script type="text/javascript" src="js/gauge.js"></script>
+
+	    <script type="text/javascript">
+	    	$(document).ready(function(){
+	       		drawChart(minorTicks_count,min_val,max_val,max_green/100,(max_yellow-max_green)/100,(max_red-max_yellow)/100,cur_value,fontSize,min_green,max_green,min_yellow,max_yellow,min_red,max_red);
+		        $('.font_type').on("change",function(){
+		            var font_family = $(this).val();
+		            $('body').css('font-family',font_family);
+		        });
+	    	});
+
+			function drawBorder(){
+			}
+
+	      var app = angular.module('sliderDemoApp', ['ui.slider']);
+	      
+	      // Currecnt fontSize Function
+          app.factory('a_fontSize', function () {
+            return {
+              refreshfontSize: function (val) {
+                 fontSize = val;
+	       		drawChart(minorTicks_count,min_val,max_val,max_green/100,(max_yellow-max_green)/100,(max_red-max_yellow)/100,cur_value,fontSize,min_green,max_green,min_yellow,max_yellow,min_red,max_red);
+              }
+            };
+          });
+
+	      // Currecnt minorTicks Function
+	      app.factory('a_minorTicks', function () {
+	        return {
+	          refreshminorTicks: function (val) {
+	             minorTicks_count = val;
+	       		drawChart(minorTicks_count,min_val,max_val,max_green/100,(max_yellow-max_green)/100,(max_red-max_yellow)/100,cur_value,fontSize,min_green,max_green,min_yellow,max_yellow,min_red,max_red);
+	          }
+	        };
+	      });
+	      
+	      // Currecnt Value Function
+	      app.factory('a_cur_value', function () {
+	        return {
+	          refreshValue: function (val) {
+	             cur_value = val;
+	       		drawChart(minorTicks_count,min_val,max_val,max_green/100,(max_yellow-max_green)/100,(max_red-max_yellow)/100,cur_value,fontSize,min_green,max_green,min_yellow,max_yellow,min_red,max_red);
+	          }
+	        };
+	      });
+
+
+	      // Min - Max Function
+	      app.factory('a_min_max', function () {
+	        return {
+	          refreshMinMax: function (val) {
+	          	if(val[1] - val[0] > 0){
+		            min_val = val[0];
+		            max_val = val[1];
+	       		drawChart(minorTicks_count,min_val,max_val,max_green/100,(max_yellow-max_green)/100,(max_red-max_yellow)/100,cur_value,fontSize,min_green,max_green,min_yellow,max_yellow,min_red,max_red);
+	          	}
+	          }
+	        };
+	      });
+
+	      // Yellow Range Function
+	      app.factory('a_yellow', function () {
+	        return {
+	          refreshYellow: function (val) {
+	             min_yellow = val[0];
+	             max_yellow = val[1];
+	       		drawChart(minorTicks_count,min_val,max_val,max_green/100,(max_yellow-max_green)/100,(max_red-max_yellow)/100,cur_value,fontSize,min_green,max_green,min_yellow,max_yellow,min_red,max_red);
+	          }
+	        };
+	      });
+
+	      // Green Range Function
+	      app.factory('a_green', function () {
+	        return {
+	          refreshGreen: function (val) {
+	             min_green = val[0];
+	             max_green = val[1];
+	       		drawChart(minorTicks_count,min_val,max_val,max_green/100,(max_yellow-max_green)/100,(max_red-max_yellow)/100,cur_value,fontSize,min_green,max_green,min_yellow,max_yellow,min_red,max_red);
+	          }
+	        };
+	      });
+
+	      // Red Range Function
+	      app.factory('a_red', function () {
+	        return {
+	          refreshRed: function (val) {
+	             min_red = val[0];
+	             max_red = val[1];
+	       		drawChart(minorTicks_count,min_val,max_val,max_green/100,(max_yellow-max_green)/100,(max_red-max_yellow)/100,cur_value,fontSize,min_green,max_green,min_yellow,max_yellow,min_red,max_red);
+	          }
+	        };
+	      });
+	      
+	      app.controller('sliderDemoCtrl', function($scope, $log, a_cur_value, a_min_max, a_green, a_yellow, a_red, a_minorTicks, a_fontSize) {
+
+	         //Refresh fontSize
+            function refreshfontSize(ev, ui) {
+              a_fontSize.refreshfontSize($scope.a_fontSize.val);
+            }
+            
+            $scope.a_fontSize =  {
+              val:fontSize,
+              options:{
+                orientation: 'horizontal',
+                range: 'min',
+                change: refreshfontSize,
+                slide: refreshfontSize
+              }
+            };
+        
+	        //Refresh minorTicks
+	        function refreshminorTicks (ev, ui) {
+	          a_minorTicks.refreshminorTicks($scope.a_minorTicks.val);
+	        }
+	        
+	        $scope.a_minorTicks =  {
+	          val:minorTicks_count,
+	          options:{
+	            orientation: 'horizontal',
+	            min: 2,
+	            max: 20,
+	            range: 'min',
+	            change: refreshminorTicks,
+	            slide: refreshminorTicks
+	          }
+	        };
+	        
+	        //Refresh Value
+	        function refreshValue (ev, ui) {
+	          a_cur_value.refreshValue($scope.a_cur_value.val);
+	        }
+	        
+	        $scope.a_cur_value =  {
+	          val:cur_value,
+	          options:{
+	            orientation: 'horizontal',
+	            range: 'min',
+	            change: refreshValue,
+	            slide: refreshValue
+	          }
+	        };
+
+
+	        //Refresh Min - Max
+	        function refreshMinMax(ev, ui) {
+	          a_min_max.refreshMinMax($scope.a_min_max.val);
+	        }
+
+	        $scope.a_min_max = {
+	          val:[min_val,max_val],
+	          options:{
+	            orientation: 'horizontal',
+	            range: true,
+	            change: refreshMinMax,
+	            slide: refreshMinMax
+	          }
+	        };
+
+
+	        //Refresh Red Range
+	        function refreshRed(ev, ui) {
+	          a_red.refreshRed($scope.a_red.val);
+	        }
+
+	        $scope.a_red = {
+	          val:[min_red,max_red],
+	          options:{
+	            min : 0,
+	            max : 100,
+	            orientation: 'horizontal',
+	            range: true,
+	            change: refreshRed,
+	            slide: refreshRed
+	          }
+	        };
+
+	        //Refresh Yellow Range
+	        function refreshYellow(ev, ui) {
+	          a_yellow.refreshYellow($scope.a_yellow.val);
+	        }
+
+	        $scope.a_yellow = {
+	          val:[min_yellow,max_yellow],
+	          options:{
+	            min : 0,
+	            max : 100,
+	            orientation: 'horizontal',
+	            range: true,
+	            change: refreshYellow,
+	            slide: refreshYellow
+	          }
+	        };
+
+	        //Refresh Green Range
+	        function refreshGreen(ev, ui) {
+	          a_green.refreshGreen($scope.a_green.val);
+	        }
+
+	        $scope.a_green = {
+	          val:[min_green,max_green],
+	          options:{
+	            min : 0,
+	            max : 100,
+	            orientation: 'horizontal',
+	            range: true,
+	            change: refreshGreen,
+	            slide: refreshGreen
+	          }
+	        };
+	      });
+	    </script> 
+
+	</head>
+	
+	<body ng-controller="sliderDemoCtrl">
+	  	<div id="clock_div" style="position:absolute;top:30;left:30px;">
+	  		<div id="chart_div" style="width: 400px; height: 300px;position: absolute;"></div>
+	  		<div id="pointer_div" style="width: 400px; height: 300px;position: absolute;"></div>
+	        <div style="position:absolute;top:250px;">
+	          <h4>Select Font</h4>
+	          <select class="font_type">
+	              <option class="fontSelect" value="Arial">Arial</option>
+	              <option class="fontSelect" value="Lato">Lato</option>
+	              <option class="fontSelect" value="Montserrat">Montserrat</option>
+	              <option class="fontSelect" value="AbrilFatface">AbrilFatface</option>
+	          </select>
+	        </div>
+	    </div>
+	    <div id="slider_div" style="margin-left: 500px;">
+	      <div class="each_div">
+	        <div class="sliderExample">
+	          <span>ValueFontSize: </span>
+	          <input readonly type="text" ng-model="a_fontSize.val" />  
+	          <div ui-slider="a_fontSize.options" min="15" max="25" ng-model="a_fontSize.val"></div>
+	        </div>	        
+	        <div class="sliderExample">
+	          <span>Min - Max </span>
+	          <div  ui-slider="a_min_max.options" min="0" max="100" step="1" lower-bound="0" upper-bound="100" use-decimals ng-model="a_min_max.val">
+	          </div>
+	          <input readonly type="text" ng-model="a_min_max.val" />
+	        </div>
+	        <div class="sliderExample">
+	          <span>minorTicks: </span>
+	          <input readonly type="text" ng-model="a_minorTicks.val" />  
+	          <div ui-slider="a_minorTicks.options" min="15" max="25" ng-model="a_minorTicks.val"></div>
+	        </div>
+	        <div class="sliderExample">
+	          <span>Value: </span>
+	          <input readonly type="text" ng-model="a_cur_value.val" />  
+	          <div ui-slider="a_cur_value.options" step="0.5" min="0" use-decimals max="100" ng-model="a_cur_value.val"></div>
+	        </div>
+	      </div>
+	      <div class="each_div">
+	        <div class="sliderExample">
+	          <span>Green Range(%): </span>
+	          <input readonly type="text" ng-model="a_green.val" />
+	          <div  ui-slider="a_green.options" step="1" lower-bound="0" upper-bound="100" use-decimals ng-model="a_green.val"></div>
+	        </div>
+
+	        <div class="sliderExample">
+	          <span>Yellow Range(%): </span>
+	          <input readonly type="text" ng-model="a_yellow.val" />
+	          <div  ui-slider="a_yellow.options" step="1" lower-bound="0" upper-bound="100" use-decimals ng-model="a_yellow.val"></div>
+	        </div>
+
+	        <div class="sliderExample">
+	          <span>Red Range(%): </span>
+	          <input readonly type="text" ng-model="a_red.val" />
+	          <div  ui-slider="a_red.options" step="1" lower-bound="0" upper-bound="100" use-decimals ng-model="a_red.val"></div>
+	        </div>
+	      </div>    
+	    </div>
+	</body>
+	
+</html>
